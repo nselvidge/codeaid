@@ -1,5 +1,6 @@
 import os
-from flask import Flask, request, jsonify, render_template
+import yaml
+from flask import Flask, request, jsonify, render_template, Response
 
 app = Flask(__name__)
 host = os.environ.get("HOST", "http://localhost") 
@@ -32,6 +33,64 @@ def plugin_json():
         "contact_email": "support@example.com",
         "legal_info_url": f"{host}/legal"
     }
+
+@app.route('/openapi.yaml', methods=['GET'])
+def openapi_yaml():
+    openapi_spec = {
+    'openapi': '3.0.1',
+    'info': {
+        'title': 'CodeAid',
+        'description': 'A plugin that analyzes and summarizes your code repos using ChatGPT.',
+        'version': 'v1',
+    },
+    'servers': [
+        {
+            'url': f'{host}/openapi.yaml',
+        },
+    ],
+    'paths': {
+        '/search': {
+            'get': {
+                'operationId': 'searchQuery',
+                'summary': 'Handles a user\'s query',
+                'responses': {
+                    '200': {
+                        'description': 'OK',
+                        'content': {
+                            'application/json': {
+                                'schema': {
+                                    '$ref': '#/components/schemas/searchQueryResponse',
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
+    'components': {
+        'schemas': {
+            'searchQueryResponse': {
+                'type': 'object',
+                'properties': {
+                    'text': {
+                        'type': 'string',
+                        'description': 'The answer to what the user was asking',
+                    },
+                    'timestamp': {
+                        'type': 'string',
+                        'format': 'date-time',
+                        'description': 'The timestamp of the response.',
+                    },
+                },
+            },
+        },
+    },
+}
+
+
+    yaml_content = yaml.dump(openapi_spec, sort_keys=False)
+    return Response(yaml_content, content_type='application/x-yaml')
 
 @app.route('/search', methods=['POST'])
 def search():
