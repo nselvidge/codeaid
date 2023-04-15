@@ -1,7 +1,7 @@
 """This script pulls the latest code from a git repo"""
 import subprocess
 import os
-from md_parser import get_md_files, get_md_text
+from md_parser import get_md_files, get_md_text, create_md_chunks
 
 REPO_URL = "https://github.com/hwchase17/langchain"
 
@@ -20,6 +20,23 @@ def pull_git_repo():
     print("Done pulling latest code from git repo, running markdown parser")
 
     # run markdown parser
+    md_files = get_md_files(target_dir)
+    md_chunks = []
+    for md_file in md_files:
+        md_text = get_md_text(md_file)
+        current_chunks = create_md_chunks(md_text)
+
+        for i, chunk in enumerate(current_chunks):
+            md_chunks.append({
+                'id': f"{md_file}-{i}",
+                'text': chunk,
+                'metadata': {
+                    'file_path': md_file,
+                }
+            })
+
+    print(f"Found {len(md_chunks)} chunks of markdown text")
+    print(md_chunks[10], md_chunks[15], md_chunks[20])
 
     print("Done running markdown parser, running embedding generator")
 
