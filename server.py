@@ -33,3 +33,6 @@ def plugin_json():
         "contact_email": "support@example.com",
         "legal_info_url": f"{host}/legal"
     }
+
+if __name__ == '__main__':
+    app.run(debug=True)
