@@ -1,7 +1,6 @@
 import os
 from flask import Flask, request, jsonify, render_template
 
-
 app = Flask(__name__)
 host = os.environ.get("HOST", "http://localhost") 
 
