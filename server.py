@@ -1,17 +1,16 @@
 import os
-from flask import Flask
+from flask import Flask, request, jsonify, render_template
 
 
 app = Flask(__name__)
-host = os.environ.get("HOST", "http://localhost")
+host = os.environ.get("HOST", "http://localhost") 
 
-
-@app.route("/")
+@app.route("/", methods=["GET"])
 def hello_world():
-    return "<p>Hello, World!</p>"
+    return render_template('index.html')
 
 
-@app.route(".well-known/ai-plugin.json")
+@app.route("/.well-known/ai-plugin.json")
 def plugin_json():
     """Return the plugin.json file for the plugin with current host"""
     return {
