@@ -33,3 +33,17 @@ def plugin_json():
         "contact_email": "support@example.com",
         "legal_info_url": f"{host}/legal"
     }
+
+@app.route('/search', methods=['POST'])
+def search():
+    data = request.get_json()
+
+    if not data or 'text' not in data:
+        return jsonify({'error': 'Missing or invalid payload'}), 400
+
+    text = data['text']
+    
+    # Perform your search or processing here
+    result = f'You searched for: {text}'
+
+    return jsonify({'result': result})
