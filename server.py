@@ -1,7 +1,6 @@
 import os
 from flask import Flask, request, jsonify, render_template
 
-
 app = Flask(__name__)
 host = os.environ.get("HOST", "http://localhost") 
 
@@ -47,3 +46,6 @@ def search():
     result = f'You searched for: {text}'
 
     return jsonify({'result': result})
+
+if __name__ == '__main__':
+    app.run(debug=True)
