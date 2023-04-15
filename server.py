@@ -36,6 +36,7 @@ def plugin_json():
 
 @app.route('/openapi.yaml', methods=['GET'])
 def openapi_yaml():
+    server_host = request.host
     openapi_spec = {
     'openapi': '3.0.1',
     'info': {
@@ -45,7 +46,7 @@ def openapi_yaml():
     },
     'servers': [
         {
-            'url': f'{host}/openapi.yaml',
+            'url': f'{server_host}/openapi.yaml',
         },
     ],
     'paths': {
