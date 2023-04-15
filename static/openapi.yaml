@@ -1,0 +1,31 @@
+openapi: 3.0.1
+info:
+  title: CodeAid
+  description: A plugin that analyzes and summarizes your code repos using ChatGPT.
+  version: 'v1'
+servers:
+  - url: http://127.0.0.1:5000
+paths:
+  /search:
+    get:
+      operationId: searchQuery
+      summary: Handles a user's query
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getTodosResponse'
+components:
+  schemas:
+    searchQueryResponse:
+      type: object
+      properties:
+        text:
+          type: string
+          description: The answer to what the user was asking
+        timestamp:
+          type: string
+          format: date-time
+          description: The timestamp of the response.
