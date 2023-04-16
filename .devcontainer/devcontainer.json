@@ -1,0 +1,11 @@
+{
+    // ... other settings ...
+    "forwardPorts": [5000],
+    "portsAttributes": {
+      "5000": {
+        "onAutoForward": "notify",
+        "visibility": "public"
+      }
+    }
+    // ... other settings ...
+  }
