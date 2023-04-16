@@ -33,7 +33,7 @@ def get_py_text(py_path):
 def create_py_chunks(py_text):
     # Split Markdown text into chunks
     splitter = CharacterTextSplitter.from_tiktoken_encoder(
-        "gpt2", chunk_size=300, separator=".")
+        "gpt2", chunk_size=3000, separator=".")
     md_chunks = splitter.split_text(py_text)
     return md_chunks
 
@@ -41,15 +41,21 @@ def get_py_summary(py_text):
     llm = OpenAI(temperature=0)
     text_splitter = CharacterTextSplitter()
     texts = create_py_chunks(py_text)
+    prompt_template = """Write a concise summary of the following python code 
+                    including inputs/outputs, imports/exports, and description of significant funcitons:
+                        {text}
+                    """
+    PROMPT = PromptTemplate(template=prompt_template, input_variables=["text"])
+    chain = load_summarize_chain(llm, chain_type="stuff", prompt=PROMPT)
+    chain = load_summarize_chain(llm, chain_type="map_reduce", map_prompt=PROMPT, combine_prompt=PROMPT)
     docs = [Document(page_content=t) for t in texts[:3]]
-    chain = load_summarize_chain(llm, chain_type="map_reduce")
-    return chain.run(docs)
+    return chain({"input_documents": docs}, return_only_outputs=True)
 
 
 root_dir = './.data/langchain/'
-print('Python files found:', len(get_py_files(root_dir)))
+# print('Python files found:', len(get_py_files(root_dir)))
 
 py_files = get_py_files(root_dir)
-py_text = get_py_text(py_files[1])
+py_text = get_py_text(py_files[50])
 summary = get_py_summary(py_text)
 print(summary)
