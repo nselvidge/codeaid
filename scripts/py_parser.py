@@ -53,7 +53,7 @@ def get_py_summary(py_text):
 
 
 root_dir = './.data/langchain/'
-# print('Python files found:', len(get_py_files(root_dir)))
+print('Python files found:', len(get_py_files(root_dir)))
 
 py_files = get_py_files(root_dir)
 py_text = get_py_text(py_files[50])
