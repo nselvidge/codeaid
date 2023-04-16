@@ -37,16 +37,11 @@ def pull_git_repo():
             })
 
     print(f"Found {len(md_chunks)} chunks of markdown text")
-    
+
     print("Done running markdown parser, running embedding generator")
 
     # run embedding generator
-    generate_and_store_embeddings(
-        [md_chunks[10], md_chunks[15], md_chunks[20]])
-
-    print("Done running embedding generator, uploading embeddings to pinecone")
-
-    # upload embeddings to pinecone
+    generate_and_store_embeddings(md_chunks)
 
     print("Done")
 
