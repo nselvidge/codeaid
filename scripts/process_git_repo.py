@@ -5,7 +5,8 @@ from md_parser import get_md_files, get_md_text, create_md_chunks
 from py_parser import get_py_files, get_py_text, get_py_summary
 from generate_embeddings import generate_and_store_embeddings
 
-REPO_URL = "https://github.com/hwchase17/langchain"
+REPO_NAME = 'llamaindex'
+REPO_URL = "https://github.com/jerryjliu/llama_index"
 
 
 def pull_git_repo():
@@ -14,7 +15,7 @@ def pull_git_repo():
     # clone repo into .data folder
     target_dir = os.path.join(
         os.path.dirname(
-            os.path.abspath(__file__)), "../.data")
+            os.path.abspath(__file__)), f"../.data/{REPO_NAME}")
 
     os.makedirs(target_dir, exist_ok=True)
     subprocess.call(["git", "clone", REPO_URL], cwd=target_dir)
@@ -56,7 +57,7 @@ def pull_git_repo():
     print("Done running markdown parser, running embedding generator")
 
     # run embedding generator
-    generate_and_store_embeddings(md_chunks)
+    generate_and_store_embeddings(REPO_NAME, md_chunks)
 
     print("Done")
 

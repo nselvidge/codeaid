@@ -18,12 +18,12 @@ def get_embedding(document):
     return document
 
 
-def generate_and_store_embeddings(data: list[dict]):
+def generate_and_store_embeddings(repo: str, data: list[dict]):
     """
     :input data: data is a list of dictionaries with the following keys 'id', 'text', 'metadata'
     """
     index = DocumentArray(storage='annlite', config={
-                          'n_dim': EMBEDDING_DIMENSION, 'data_path': '../annlite', })
+                          'n_dim': EMBEDDING_DIMENSION, 'data_path': f"../annlite/{repo}", })
 
     index.clear()
 
@@ -35,10 +35,10 @@ def generate_and_store_embeddings(data: list[dict]):
     index.apply(get_embedding)
 
 
-def query(prompt: str, top_k: int = 30):
+def query(repo: str, prompt: str, top_k: int = 30):
     # create index
     index = DocumentArray(storage='annlite', config={
-                          'n_dim': EMBEDDING_DIMENSION, 'data_path': './annlite', })
+                          'n_dim': EMBEDDING_DIMENSION, 'data_path': f"./annlite/{repo}", })
 
     document = Document(content=prompt)
     document = get_embedding(document=document)

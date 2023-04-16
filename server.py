@@ -43,7 +43,7 @@ def openapi_yaml():
         'openapi': '3.0.1',
         'info': {
             'title': 'CodeAid',
-            'description': 'A plugin that analyzes and summarizes your code repos using ChatGPT.',
+            'description': 'A plugin that provides context and documentation for open source codebases. Currently only supports the llamaindex and langchain repos.',
             'version': 'v1',
         },
         'paths': {
@@ -60,7 +60,17 @@ def openapi_yaml():
                             'schema': {
                                 'type': 'string',
                             },
-                        },],
+                        }, {
+
+                            'name': 'repo',
+                            'in': 'query',
+                            'description': 'The name of the repo. Only llamaindex or langchain are supported for now.',
+                            'required': True,
+                            'schema': {
+                                'type': 'string',
+                                'enum': ['llamaindex', 'langchain'],
+                            },
+                        }],
                     'responses': {
                         '200': {
                             'description': 'OK',
@@ -84,7 +94,14 @@ def openapi_yaml():
                         'query': {
                             'type': 'string',
                             'description': 'A question about the codebase',
+                            'required': 'true',
                         },
+                        'repo': {
+                            'type': 'string',
+                            'enum': ['llamaindex', 'langchain'],
+                            'description': 'The name of the repo. Only llamaindex or langchain are supported for now.',
+                            'required': 'true',
+                        }
                     },
                 },
                 'searchQueryResponse': {
@@ -118,7 +135,8 @@ def search():
         return jsonify({'error': 'Missing or invalid payload'}), 400
 
     text = data['query']
-    documents = query(text)
+    repo = data['repo']
+    documents = query(repo, text)
     dictionary = [{'text': text} for text in documents[:, 'text']]
     print(dictionary)
     return jsonify(dictionary)
