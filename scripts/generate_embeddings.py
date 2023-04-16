@@ -27,10 +27,14 @@ def get_embedding_batch(batch):
     for i, doc in enumerate(batch):
         doc.embedding = tmp[i]
 
-def get_index_dir(repo):
+def get_root_index():
     script_directory = os.path.dirname(os.path.abspath(__file__))
     project_directory = os.path.dirname(script_directory)
-    return f"{project_directory}/annlite/{repo}"
+    return f"{project_directory}/annlite/"
+
+def get_index_dir(repo):
+    project_dir = get_root_index()
+    return project_dir + repo
 
 def get_index(repo):
     index = DocumentArray(storage='annlite', config={
@@ -46,10 +50,8 @@ def generate_and_store_embeddings(repo: str, data: list[dict], batch_size=10, wi
     index = get_index(repo)
 
     index.clear()
-    index.summary()
-
     documents = [Document(text=i['text'], id=i['id'],
-                          metadata=i['metadata']) for i in data][:10]
+                          metadata=i['metadata']) for i in data]
 
     index.extend(documents)
 
@@ -62,7 +64,6 @@ def generate_and_store_embeddings(repo: str, data: list[dict], batch_size=10, wi
     else:
         index.apply(get_embedding, show_progress=True)
     index.summary()
-
 
 def query(repo: str, prompt: str, top_k: int = 30):
     # create index

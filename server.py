@@ -9,10 +9,6 @@ app = Flask(__name__)
 # host = os.environ.get("HOST", "http://localhost")
 host = "https://zakariaelh-legendary-space-invention-5x69wqw7p724w7-5000.preview.app.github.dev/"
 
-def find_folders_in_directory(directory):
-    folders = [entry.name for entry in os.scandir(directory) if entry.is_dir()]
-    return folders
-
 @app.route("/", methods=["GET"])
 def hello_world():
     return render_template('index.html')
@@ -195,7 +191,7 @@ def openapi_yaml():
                     'properties': {
                         'library_name': {
                             'type': 'string',
-                            'description': 'The name of the repo/ library you dont about.',
+                            'description': 'The name of the repo/ library you don know about.',
                             'required': 'true',
                         }
                     },
@@ -233,8 +229,8 @@ def search():
     text = data['query']
     repo = data['repo']
     documents = query(repo, text)
-    dictionary = [{'text': text} for text in documents[:, 'text']]
-    print(dictionary)
+    dictionary = [{'text': doc.text} for doc in documents]
+    print(f'number of documents returned {len(dictionary)}')
     return jsonify(dictionary)
 
 
@@ -247,18 +243,25 @@ def load():
 
     repo_url = data['url']
     repo_name = data['name']
-    pull_git_repo(
+    is_indexed = pull_git_repo(
         repo_name=repo_name,
         repo_url=repo_url,
         include_summary=False,
         include_pydocs=True,
         with_batching=True
     )
-    resp = [
-        {
-            'text': f'your repo {repo_url} has been index successfully. Feel free to ask any questions about it.'
-        }
-    ]
+    if is_indexed:
+        resp = [
+            {
+                'text': f'This repo {repo_url} is already indexed. Feel free to ask any questions.'
+            }
+            ]
+    else:
+        resp = [
+            {
+                'text': f'your repo {repo_url} has been indexed successfully. Feel free to ask any questions about it.'
+            }
+        ]
     return jsonify(resp)
 
 
