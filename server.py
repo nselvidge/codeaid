@@ -53,7 +53,7 @@ def openapi_yaml():
         '/search': {
             'get': {
                 'operationId': 'searchQuery',
-                'summary': 'Handles a user\'s query',
+                'summary': 'Answers questions about the codebase to help users understand its functionality',
                 'responses': {
                     '200': {
                         'description': 'OK',
@@ -76,7 +76,7 @@ def openapi_yaml():
                 'properties': {
                     'text': {
                         'type': 'string',
-                        'description': 'The answer to what the user was asking',
+                        'description': 'A detailed answer or relevant information about the queried aspect of the codebase',
                     },
                     'timestamp': {
                         'type': 'string',
