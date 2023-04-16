@@ -31,7 +31,7 @@ def plugin_json():
             "url": f"{host}/openapi.yaml",
             "is_user_authenticated": False
         },
-        "logo_url": f"{host}/logo.png",
+        "logo_url": f"{host}/static/logo.png",
         "contact_email": "support@example.com",
         "legal_info_url": f"{host}/legal"
     }
