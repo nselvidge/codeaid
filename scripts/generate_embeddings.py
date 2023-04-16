@@ -7,13 +7,9 @@ from docarray import DocumentArray, Document
 PINECONE_API_KEY = os.getenv('PINECONE_API_KEY')
 PINECONE_ENV = "us-west1-gcp"
 INDEX_NAME = "test-2"
-# os.getenv('OPENAI_API_KEY')
-OPENAI_API_KEY = "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"
 EMBEDDING_DIMENSION = 1536
 PROJECT_NAME = "codeaid"
 EMBEDDING_MODEL = "text-embedding-ada-002"
-
-openai.api_key = OPENAI_API_KEY
 
 
 def get_embedding(document):
@@ -42,10 +38,11 @@ def generate_and_store_embeddings(data: list[dict]):
 def query(prompt: str, top_k: int = 30):
     # create index
     index = DocumentArray(storage='annlite', config={
-                          'n_dim': EMBEDDING_DIMENSION, 'data_path': '../annlite', })
+                          'n_dim': EMBEDDING_DIMENSION, 'data_path': './annlite', })
 
     document = Document(content=prompt)
     document = get_embedding(document=document)
-    # matches = index.find(document, metric='cosine', top_k=top_k)
-    matches = index.find(document, metric='cosine', limit=top_k)
-    return matches
+    matches = index.find(document, metric='cosine', top_k=top_k)
+
+    print(index)
+    return matches[0]

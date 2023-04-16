@@ -1,6 +1,7 @@
 import os
 import yaml
 from flask import Flask, request, jsonify, render_template, Response
+from scripts.generate_embeddings import query
 
 app = Flask(__name__)
 host = os.environ.get("HOST", "http://localhost")
@@ -50,6 +51,16 @@ def openapi_yaml():
                 'get': {
                     'operationId': 'searchQuery',
                     'summary': 'Answers questions about the codebase to help users understand its functionality',
+                    'parameters': [
+                        {
+                            'name': 'query',
+                            'in': 'query',
+                            'description': 'A question about the codebase',
+                            'required': True,
+                            'schema': {
+                                'type': 'string',
+                            },
+                        },],
                     'responses': {
                         '200': {
                             'description': 'OK',
@@ -67,6 +78,15 @@ def openapi_yaml():
         },
         'components': {
             'schemas': {
+                'searchQueryRequest': {
+                    'type': 'object',
+                    'properties': {
+                        'query': {
+                            'type': 'string',
+                            'description': 'A question about the codebase',
+                        },
+                    },
+                },
                 'searchQueryResponse': {
                     'type': 'object',
                     'properties': {
@@ -88,19 +108,20 @@ def openapi_yaml():
     return Response(yaml_content, content_type='application/x-yaml')
 
 
-@ app.route('/search', methods=['POST'])
+@ app.route('/search', methods=['GET'])
 def search():
-    data = request.get_json()
+    print('searching')
+    data = request.args
+    print(data)
 
-    if not data or 'text' not in data:
+    if not data or 'query' not in data:
         return jsonify({'error': 'Missing or invalid payload'}), 400
 
-    text = data['text']
-
-    # Perform your search or processing here
-    result = f'You searched for: {text}'
-
-    return jsonify({'result': result})
+    text = data['query']
+    documents = query(text)
+    dictionary = [{'text': text} for text in documents[:, 'text']]
+    print(dictionary)
+    return jsonify(dictionary)
 
 
 if __name__ == '__main__':
