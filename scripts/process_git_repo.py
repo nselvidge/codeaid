@@ -2,6 +2,7 @@
 import subprocess
 import os
 from md_parser import get_md_files, get_md_text, create_md_chunks
+from generate_embeddings import generate_and_store_embeddings
 
 REPO_URL = "https://github.com/hwchase17/langchain"
 
@@ -28,7 +29,7 @@ def pull_git_repo():
 
         for i, chunk in enumerate(current_chunks):
             md_chunks.append({
-                'id': f"{md_file}-{i}",
+                'id': f"{md_file.split('.data')[1]}-{i}",
                 'text': chunk,
                 'metadata': {
                     'file_path': md_file,
@@ -36,11 +37,12 @@ def pull_git_repo():
             })
 
     print(f"Found {len(md_chunks)} chunks of markdown text")
-    print(md_chunks[10], md_chunks[15], md_chunks[20])
-
+    
     print("Done running markdown parser, running embedding generator")
 
     # run embedding generator
+    generate_and_store_embeddings(
+        [md_chunks[10], md_chunks[15], md_chunks[20]])
 
     print("Done running embedding generator, uploading embeddings to pinecone")
 
