@@ -58,4 +58,4 @@ root_dir = './.data/langchain/'
 py_files = get_py_files(root_dir)
 py_text = get_py_text(py_files[50])
 summary = get_py_summary(py_text)
-print(summary)
+print(summary['output_text'])
